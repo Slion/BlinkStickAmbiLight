@@ -38,7 +38,8 @@ using log4net;
 
 namespace BlinkStickAmbiLight
 {
-	public partial class MainForm : Form
+    //[System.ComponentModel.DesignerCategory("Form")]
+    public partial class MainForm : Form
 	{		
 		private static readonly ILog log = LogManager.GetLogger(typeof(MainForm));
 		RegionFrame rf;
@@ -322,21 +323,14 @@ namespace BlinkStickAmbiLight
                 
                 DXScreen = GetImage(GetScreenRect());
         		SetColors();
-        	}
-        	if (cbPreview.Checked)
-        	{
 
-                if (DXScreen != null)
+                if (cbPreview.Checked)
                 {
-                    DXScreen.Dispose();
+                    pbPreview.Image = DXScreen;
                 }
-
-                DXScreen = GetImage(GetScreenRect());
-        		SetColors();
-        		pbPreview.Image = DXScreen;
-        	}
-//			sw.Stop();
-//			Debug.WriteLine((1000 / sw.ElapsedMilliseconds).ToString());
+            }
+            //			sw.Stop();
+            //			Debug.WriteLine((1000 / sw.ElapsedMilliseconds).ToString());
         }
 				
 		public void RefreshPreview()
@@ -351,8 +345,8 @@ namespace BlinkStickAmbiLight
 			                     (int)nud_right.Value, pbPreview.Width, pbPreview.Height, (int)nud_size.Value, (int)nud_shift.Value);
 			CalculateDXRegions();
 			SetColors();
-			pbPreview.Image = DXScreen;
-		}
+            pbPreview.Image = cbPreview.Checked?DXScreen:null;
+        }
 		
 		/// <summary>
         /// Set color for any region
@@ -579,5 +573,15 @@ namespace BlinkStickAmbiLight
 		{
 			ToggleThread(true);
 		}
-	}
+
+        private void cbPreview_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!cbPreview.Checked)
+            {
+                // Make sure we remove our image if preview is disabled
+                pbPreview.Image = null;
+            }
+            
+        }
+    }
 }
