@@ -81,7 +81,7 @@ namespace BlinkStickAmbiLight
 			ScreenRect = new Rectangle(0,0, Screen.AllScreens[iScreen].Bounds.Width / preview_factor,
 			                            Screen.AllScreens[iScreen].Bounds.Height / preview_factor);		
 			
-			this.Height = 484; //pbPreview.Height + 100;
+			//this.Height = 484; //pbPreview.Height + 100;
 			this.Width = pbPreview.Width + 260;
 			grpScreenPreview.Text = "Screen Preview (Resolution: " + Screen.AllScreens[iScreen].Bounds.Width.ToString() + 
 									" x " + Screen.AllScreens[iScreen].Bounds.Height.ToString() + ")";
@@ -417,7 +417,7 @@ namespace BlinkStickAmbiLight
 		void PbPreviewPaint(object sender, PaintEventArgs e)
 		{
 			CreatePixelRects(e.Graphics);
-			lb_FPS.Text = CalculateFrameRate().ToString();
+			lb_FPS.Text = "FPS: " + CalculateFrameRate().ToString();
 		}
 		
 		void BtnRefreshBSClick(object sender, EventArgs e)

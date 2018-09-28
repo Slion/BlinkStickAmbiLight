@@ -76,7 +76,8 @@ namespace BlinkStickAmbiLight
 		{
 			while (true)
 			{
-				Sleep(RefreshDXTime);
+                Sleep(RefreshDXTime);
+                //Thread.Sleep(RefreshDXTime);
 				if (cbPreview.Checked)
 				{
 					MethodInvoker Calculate = delegate

@@ -430,7 +430,7 @@ namespace BlinkStickAmbiLight
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(785, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(882, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -463,23 +463,21 @@ namespace BlinkStickAmbiLight
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpScreenPreview.BackColor = System.Drawing.SystemColors.Control;
-            this.grpScreenPreview.Controls.Add(this.lb_FPS);
             this.grpScreenPreview.Controls.Add(this.pbPreview);
             this.grpScreenPreview.Location = new System.Drawing.Point(218, 27);
             this.grpScreenPreview.Name = "grpScreenPreview";
-            this.grpScreenPreview.Size = new System.Drawing.Size(559, 414);
+            this.grpScreenPreview.Size = new System.Drawing.Size(656, 519);
             this.grpScreenPreview.TabIndex = 5;
             this.grpScreenPreview.TabStop = false;
             this.grpScreenPreview.Text = "Screen Preview";
             // 
             // lb_FPS
             // 
-            this.lb_FPS.Location = new System.Drawing.Point(20, 357);
+            this.lb_FPS.Location = new System.Drawing.Point(9, 444);
             this.lb_FPS.Name = "lb_FPS";
             this.lb_FPS.Size = new System.Drawing.Size(100, 23);
             this.lb_FPS.TabIndex = 2;
             this.lb_FPS.Text = "FPS";
-            this.lb_FPS.Visible = false;
             // 
             // pbPreview
             // 
@@ -545,7 +543,8 @@ namespace BlinkStickAmbiLight
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(785, 445);
+            this.ClientSize = new System.Drawing.Size(882, 550);
+            this.Controls.Add(this.lb_FPS);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpScreenPreview);
             this.Controls.Add(this.menuStrip1);
