@@ -312,8 +312,8 @@ namespace BlinkStickAmbiLight
         
         private void CalculateDXRegions()
         {
-//			var sw = new Stopwatch();
-//			sw.Start();
+			var sw = new Stopwatch();
+			sw.Start();
         	if (glob.Lighttype != globalsettings.LightTypes.Static)
         	{
                 if (DXScreen!=null)
@@ -329,8 +329,9 @@ namespace BlinkStickAmbiLight
                     pbPreview.Image = DXScreen;
                 }
             }
-            //			sw.Stop();
-            //			Debug.WriteLine((1000 / sw.ElapsedMilliseconds).ToString());
+            sw.Stop();
+            Debug.WriteLine("Frame time: " + sw.ElapsedMilliseconds + "ms");
+            CalculateFrameRate();
         }
 				
 		public void RefreshPreview()
@@ -417,8 +418,14 @@ namespace BlinkStickAmbiLight
 		void PbPreviewPaint(object sender, PaintEventArgs e)
 		{
 			CreatePixelRects(e.Graphics);
-			lb_FPS.Text = "FPS: " + CalculateFrameRate().ToString();
-		}
+            UpdateFrameRate();
+            //lb_FPS.Text = "FPS: " + CalculateFrameRate().ToString();
+        }
+
+        void UpdateFrameRate()
+        {
+            lb_FPS.Text = "FPS: " + lastFrameRate;
+        }
 		
 		void BtnRefreshBSClick(object sender, EventArgs e)
 		{

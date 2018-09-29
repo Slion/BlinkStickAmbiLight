@@ -107,7 +107,8 @@ namespace BlinkStickAmbiLight
 			{
 				lastFrameRate = frameRate;
 				frameRate = 0;
-				lastTick = System.Environment.TickCount;
+                lastTick = System.Environment.TickCount;
+                Debug.Print("FPS: "+ lastFrameRate);
 			}
 			frameRate++;
 			return lastFrameRate;
