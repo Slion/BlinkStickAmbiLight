@@ -65,6 +65,7 @@ namespace BlinkStickAmbiLight
             // Make those parameters
             int topLeftPadding = 120;
             int topRightPadding = 120;
+            //TODO: add maring support
 
             // Left parameters
             int leftTopPadding = 0;

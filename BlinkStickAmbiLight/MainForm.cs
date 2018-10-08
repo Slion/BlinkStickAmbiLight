@@ -354,8 +354,10 @@ namespace BlinkStickAmbiLight
         /// </summary>
 		private void SetColors()
 		{
-			var sw = new Stopwatch();
-			sw.Start();
+            var sw = new Stopwatch();
+            sw.Start();
+
+
             byte r;
             byte g;
             byte b;
@@ -398,11 +400,18 @@ namespace BlinkStickAmbiLight
 				data_leds.Add(r);
 				data_leds.Add(b);
 			}
-			if (isOpen)
-				blink.SetColors(0, data_leds.ToArray());
-			sw.Stop();
-			//Debug.WriteLine(sw.ElapsedMilliseconds.ToString());
-		}
+            sw.Stop();
+            Debug.WriteLine("LED color compute: " + sw.ElapsedMilliseconds.ToString() + "ms");
+            
+            if (isOpen)
+            {
+                sw.Restart();
+                blink.SetColors(0, data_leds.ToArray());
+                sw.Stop();
+                Debug.WriteLine("BlinkStick: " + sw.ElapsedMilliseconds.ToString() + "ms");
+            }
+
+        }
 
 		void MainFormFormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -461,8 +470,9 @@ namespace BlinkStickAmbiLight
 			catch (Exception) {};
 			FillSettings();
 			log.Info("Stopped BlinkStick Ambilight");
-			s.Dispose();
-			d.Dispose();
+			iSurface.Dispose();
+            iSurfaceThumbnail.Dispose();
+			iDevice.Dispose();
 			notifyIcon1.Dispose();
 			this.Close();
 			Dispose();

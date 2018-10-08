@@ -26,6 +26,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -38,9 +39,11 @@ namespace BlinkStickAmbiLight
 {
 	public partial class MainForm : Form
 	{
-		static Device d;
-		static Surface s;
-		static Bitmap DXScreen;
+		Device iDevice;
+		Surface iSurface;
+        Surface iSurfaceThumbnail;
+
+        Bitmap DXScreen;
 		
 		private void DXInit()
 		{
@@ -56,7 +59,7 @@ namespace BlinkStickAmbiLight
 				present_params.BackBufferHeight = Screen.AllScreens[iScreen].WorkingArea.Height;
 				present_params.BackBufferWidth = Screen.AllScreens[iScreen].WorkingArea.Width;
 				
-				d = new Device(new Direct3D(), 0, DeviceType.Hardware, IntPtr.Zero, CreateFlags.HardwareVertexProcessing, present_params);
+				iDevice = new Device(new Direct3D(), 0, DeviceType.Hardware, IntPtr.Zero, CreateFlags.HardwareVertexProcessing, present_params);
 			}
 			catch (Exception ex)
 			{
@@ -70,22 +73,43 @@ namespace BlinkStickAmbiLight
         /// <param name="rect">Screen rectangle</param>
         public Bitmap GetImage(Rectangle rect)
         {
-        	try
+            // TODO: Move those somewhere else
+            pbPreview.Width = (Screen.AllScreens[iScreen].Bounds.Width) / preview_factor;
+            pbPreview.Height = Screen.AllScreens[iScreen].Bounds.Height / preview_factor;
+
+
+            try
         	{
         		lock (lockobj)
         		{
-        			if (s == null)
+        			if (iSurface == null)
         			{
-        				s = Surface.CreateOffscreenPlain(d, rect.Width, rect.Height, Format.A8R8G8B8, Pool.Scratch);
-        			}
-        			
-        			d.GetFrontBufferData(0, s);
-        			DataRectangle gsx = s.LockRectangle(rect, LockFlags.None);
-                    Bitmap bm = new Bitmap(rect.Width, rect.Height, CalculateStride(rect.Width, PixelFormat.Format32bppPArgb), PixelFormat.Format32bppPArgb, gsx.Data.DataPointer);
-                    Bitmap thumbnail = (Bitmap)bm.GetThumbnailImage(pbPreview.Width = (Screen.AllScreens[iScreen].Bounds.Width) / preview_factor, pbPreview.Height = Screen.AllScreens[iScreen].Bounds.Height / preview_factor ,null, IntPtr.Zero);
-                    bm.Dispose();
-        			s.UnlockRectangle();
-        			return thumbnail;
+        				iSurface = Surface.CreateOffscreenPlain(iDevice, rect.Width, rect.Height, Format.A8R8G8B8, Pool.Scratch);
+                        iSurfaceThumbnail = Surface.CreateOffscreenPlain(iDevice, pbPreview.Width, pbPreview.Height, Format.A8R8G8B8, Pool.Scratch);
+                    }
+
+                    var sw = new Stopwatch();
+
+                    // Do our screen capture, that's the most expensive operation as it copies frame data from our GPU 
+                    sw.Start();
+                    iDevice.GetFrontBufferData(0, iSurface);
+                    sw.Stop();
+                    Debug.WriteLine("GetFrontBufferData: " + sw.ElapsedMilliseconds + "ms");
+
+                    // Shrink our frame surface
+                    sw.Restart();
+                    Surface.FromSurface(iSurfaceThumbnail, iSurface, Filter.Linear, 0);
+                    sw.Stop();
+                    Debug.WriteLine("From surface schrink: " + sw.ElapsedMilliseconds + "ms");
+
+                    sw.Restart();
+                    DataRectangle gsx = iSurfaceThumbnail.LockRectangle(rect, LockFlags.None);                    
+                    Bitmap bm = new Bitmap(pbPreview.Width, pbPreview.Height, CalculateStride(pbPreview.Width, PixelFormat.Format32bppPArgb), PixelFormat.Format32bppPArgb, gsx.Data.DataPointer);                    
+                    Debug.WriteLine("Bitmap creation: " + sw.ElapsedMilliseconds + "ms");
+                    iSurfaceThumbnail.UnlockRectangle();
+                    sw.Stop();
+
+                    return bm;
         		}
         	}
         	catch (Exception ex)
